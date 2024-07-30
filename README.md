@@ -1,0 +1,2 @@
+# rman
+inventory
