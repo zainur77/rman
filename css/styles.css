@@ -1,32 +1,26 @@
-html, body {
-    height: 100%;
+/* Menetapkan warna yang sama untuk navbar dan footer */
+.navbar, .footer {
+    background-color: #007bff; /* Warna biru dari bg-primary di Bootstrap */
+    color: #fff;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-}
-
-.content {
-    flex: 1;
+/* Menetapkan tinggi tetap untuk header dan footer */
+.navbar {
+    height: 60px; /* Sesuaikan dengan kebutuhan Anda */
 }
 
 .footer {
-    background-color: #003366;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-    position: absolute;
+    height: 60px; /* Sesuaikan dengan kebutuhan Anda */
+    line-height: 60px; /* Menjaga teks tetap di tengah secara vertikal */
+    position: fixed;
     bottom: 0;
     width: 100%;
+    background-color: #007bff; /* Sama dengan warna navbar */
+    color: #fff;
+    text-align: center;
 }
 
-.btn-danger {
-    background-color: #d9534f;
-    border-color: #d43f3a;
-}
-
-.btn-danger:hover {
-    background-color: #c9302c;
-    border-color: #ac2925;
+/* Menambahkan padding untuk konten agar tidak tertutup oleh footer */
+body {
+    padding-bottom: 60px; /* Sama dengan tinggi footer */
 }

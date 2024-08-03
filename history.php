@@ -3,11 +3,15 @@
     <h2>Riwayat Barang Masuk dan Keluar</h2>
     <div class="d-flex justify-content-between mb-3">
         <form action="clear_history.php" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus semua riwayat?');">
-            <button type="submit" class="btn btn-danger">Hapus Semua Riwayat</button>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i>
+            </button>
         </form>
         <form class="form-inline" method="GET" action="">
             <input class="form-control mr-sm-2" type="search" placeholder="Cari Riwayat" aria-label="Search" name="search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
         </form>
     </div>
     <div class="table-responsive">

@@ -1,4 +1,12 @@
-<?php include 'include/header.php'; ?>
+<?php
+session_start();
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit();
+}
+
+include 'include/header.php';
+?>
 <div class="container mt-4">
     <?php if (isset($_SESSION['notification'])): ?>
         <div class="alert alert-<?php echo $_SESSION['notification_type']; ?> alert-dismissible fade show" role="alert" id="notificationAlert">
@@ -7,7 +15,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <?php unset($_SESSION['notification']); ?>
+        <?php unset($_SESSION['notification'], $_SESSION['notification_type']); ?>
     <?php endif; ?>
 
     <h2>Daftar Inventori</h2>
@@ -16,12 +24,16 @@
         <a href="add.php" class="btn btn-success">Add Item</a>
         <div class="d-flex">
             <form action="reset_id.php" method="POST" onsubmit="return confirm('Anda yakin ingin mereset ID?');" class="mr-2">
-                <button type="submit" class="btn btn-warning">Reset ID</button>
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </button>
             </form>
             <form class="form-inline" method="GET" action="">
                 <input class="form-control mr-sm-2" type="search" placeholder="Cari Barang" aria-label="Search" name="search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-                    <i class="bi bi-search"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85a1.007 1.007 0 0 0-.115-.098zm-5.44 1.055a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
+                    </svg>
                 </button>
             </form>
         </div>
@@ -29,7 +41,7 @@
 
     <div class="table-responsive">
         <table class="table table-hover table-bordered">
-            <thead class="thead-dark text-center">
+            <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
                     <th>Kode Barang</th>
@@ -56,22 +68,22 @@
                 if ($result->num_rows > 0) {
                     while($row = $result->fetch_assoc()) {
                         echo "<tr>";
-                        echo "<td class='text-center'>" . $row["id"] . "</td>";
-                        echo "<td class='text-center'>" . $row["kode_barang"] . "</td>";
-                        echo "<td class='text-center'>" . $row["nama_barang"] . "</td>";
-                        echo "<td class='text-center'>" . $row["jumlah_barang"] . "</td>";
-                        echo "<td class='text-center'>" . $row["satuan"] . "</td>";
-                        echo "<td class='text-center'>" . $row["barang_masuk"] . "</td>";
-                        echo "<td class='text-center'>" . $row["barang_keluar"] . "</td>";
-                        echo "<td class='text-center'>";
-                        echo "<a href='edit.php?id=" . $row["id"] . "' class='btn btn-primary btn-sm'><i class='bi bi-pencil'></i></a> ";
-                        echo "<a href='delete.php?id=" . $row["id"] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure you want to delete this item?\")'><i class='bi bi-trash'></i></a> ";
-                        echo "<button class='btn btn-warning btn-sm' data-toggle='modal' data-target='#updateStockModal' data-id='" . $row["id"] . "' data-nama='" . $row["nama_barang"] . "'><i class='bi bi-arrow-repeat'></i></button>";
+                        echo "<td>" . $row["id"] . "</td>";
+                        echo "<td>" . $row["kode_barang"] . "</td>";
+                        echo "<td>" . $row["nama_barang"] . "</td>";
+                        echo "<td>" . $row["jumlah_barang"] . "</td>";
+                        echo "<td>" . $row["satuan"] . "</td>";
+                        echo "<td>" . $row["barang_masuk"] . "</td>";
+                        echo "<td>" . $row["barang_keluar"] . "</td>";
+                        echo "<td>";
+                        echo "<a href='edit.php?id=" . $row["id"] . "' class='btn btn-primary btn-sm'>Edit</a> ";
+                        echo "<a href='delete.php?id=" . $row["id"] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure you want to delete this item?\")'>Delete</a> ";
+                        echo "<button class='btn btn-warning btn-sm' data-toggle='modal' data-target='#updateStockModal' data-id='" . $row["id"] . "' data-nama='" . $row["nama_barang"] . "'>Update Stock</button>";
                         echo "</td>";
                         echo "</tr>";
                     }
                 } else {
-                    echo "<tr><td colspan='8' class='text-center'>No items found</td></tr>";
+                    echo "<tr><td colspan='8'>No items found</td></tr>";
                 }
                 ?>
             </tbody>
