@@ -1,5 +1,6 @@
 <?php
 include 'include/config.php';
+require 'sync_to_google_sheet.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
@@ -33,7 +34,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $conn->query($sql_history_out);
         }
 
-        echo "Stock updated successfully";
+        // Sinkronisasi dengan Google Sheets
+        $spreadsheetId = '1-Zf0u_TJLnP7TOMEtpTutbJYwCs-XERk0leV784Bmc4';
+        $googleSheet = new GoogleSheet($spreadsheetId);
+
+        // Ambil data terbaru dari database
+        $sql = "SELECT id, kode_barang, nama_barang, jumlah_barang, satuan, barang_masuk, barang_keluar FROM items ORDER BY id ASC";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            $values = [];
+            while ($row = $result->fetch_assoc()) {
+                $values[] = array_values($row);
+            }
+
+            $range = 'Sheet1!A2'; // Sesuaikan dengan sheet dan range yang diinginkan
+            $googleSheet->updateValues($range, $values);
+        }
+
+        echo "Stock updated and synchronized successfully";
     } else {
         echo "Error: " . $sql_update . "<br>" . $conn->error;
     }

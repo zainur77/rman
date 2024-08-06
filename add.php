@@ -1,5 +1,6 @@
 <?php
 include 'include/config.php';
+require 'google_sheet.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -34,7 +35,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if ($conn->query($sql) === TRUE) {
-        $_SESSION['notification'] = 'Barang berhasil ditambahkan';
+        // Sinkronisasi dengan Google Sheets
+        $spreadsheetId = '1-Zf0u_TJLnP7TOMEtpTutbJYwCs-XERk0leV784Bmc4';
+        $googleSheet = new GoogleSheet($spreadsheetId);
+
+        // Ambil data terbaru dari database
+        $sql = "SELECT id, kode_barang, nama_barang, jumlah_barang, satuan FROM items ORDER BY id ASC";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            $values = [];
+            while ($row = $result->fetch_assoc()) {
+                $values[] = array_values($row);
+            }
+
+            $range = 'Sheet1!A2'; // Sesuaikan dengan sheet dan range yang diinginkan
+            $googleSheet->updateValues($range, $values);
+        }
+
+        $_SESSION['notification'] = 'Barang berhasil ditambahkan dan disinkronkan dengan Google Sheets';
         $_SESSION['notification_type'] = 'success';
         header('Location: index.php');
         exit;
@@ -81,3 +100,6 @@ include 'include/header.php';
 </div>
 
 <?php include 'include/footer.php'; ?>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
